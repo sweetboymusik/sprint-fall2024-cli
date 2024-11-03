@@ -6,8 +6,8 @@ import java.util.List;
 public class Flight {
     // instance variables
     private int id;
-    private LocalDate departure;
-    private LocalDate arrival;
+    private String departure;
+    private String arrival;
     private Airport origin;
     private Airport destination;
     private Aircraft aircraft;
@@ -18,7 +18,7 @@ public class Flight {
     public Flight() {
     }
 
-    public Flight(int id, LocalDate departure, LocalDate arrival, Airport origin, Airport destination, Aircraft aircraft, int numberOfPassengers, List<Passenger> passengerList) {
+    public Flight(int id, String departure, String arrival, Airport origin, Airport destination, Aircraft aircraft, int numberOfPassengers, List<Passenger> passengerList) {
         this.id = id;
         this.departure = departure;
         this.arrival = arrival;
@@ -38,19 +38,19 @@ public class Flight {
         this.id = id;
     }
 
-    public LocalDate getDeparture() {
+    public String getDeparture() {
         return departure;
     }
 
-    public void setDeparture(LocalDate departure) {
+    public void setDeparture(String departure) {
         this.departure = departure;
     }
 
-    public LocalDate getArrival() {
+    public String getArrival() {
         return arrival;
     }
 
-    public void setArrival(LocalDate arrival) {
+    public void setArrival(String arrival) {
         this.arrival = arrival;
     }
 
