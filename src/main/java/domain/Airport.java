@@ -4,17 +4,16 @@ public class Airport {
     // instance variables
     private int id;
     private String name;
-    private String airportCode;
+    private String code;
     private City city;
 
     // constructors
     public Airport() {
     }
 
-    public Airport(int id, String name, String airportCode, City city) {
+    public Airport(int id, String name, String code, City city) {
         this.id = id;
         this.name = name;
-        this.airportCode = airportCode;
         this.city = city;
     }
 
@@ -35,12 +34,12 @@ public class Airport {
         this.name = name;
     }
 
-    public String getAirportCode() {
-        return airportCode;
+    public String getCode() {
+        return code;
     }
 
-    public void setAirportCode(String airportCode) {
-        this.airportCode = airportCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public City getCity() {
