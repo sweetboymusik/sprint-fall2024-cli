@@ -2,6 +2,8 @@ package http.cli;
 
 import domain.Airport;
 import domain.City;
+import domain.Flight;
+import domain.Passenger;
 import http.client.RESTClient;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class CLIApplication {
         this.restClient = restClient;
     }
 
+    // basic reports
     public String generateCityReport() {
         List<City> cities = getRestClient().getAllCities();
         StringBuilder cityReport = new StringBuilder();
@@ -42,19 +45,40 @@ public class CLIApplication {
         return cityReport.toString();
     }
 
+    public String generatePassengerReport() {
+        List<Passenger> passengers = getRestClient().getAllPassengers();
+        StringBuilder passengerReport = new StringBuilder();
+
+        passengerReport.append("Passenger Report\n\n");
+
+        for (Passenger passenger : passengers) {
+            passengerReport.append("ID: ").append(passenger.getId()).append("\n");
+            passengerReport.append("Name: ").append(passenger.getFirstName())
+                    .append(" ")
+                    .append(passenger.getLastName())
+                    .append("\n");
+            passengerReport.append("Email: ").append(passenger.getEmail()).append("\n");
+            passengerReport.append("Phone Number: ").append(passenger.getPhoneNumber()).append("\n");
+            passengerReport.append("City: ").append(passenger.getCity().getName()).append("\n");
+        }
+
+        return passengerReport.toString();
+    }
+
+    // requirement reports
     public String generateCityAirportReport() {
         List<City> cities = getRestClient().getAllCities();
-        StringBuilder cityReport = new StringBuilder();
+        StringBuilder cityAirportReport = new StringBuilder();
 
-        cityReport.append("City-Airport Report\n");
-        cityReport.append("(What airports are in what cities)\n\n");
+        cityAirportReport.append("City-Airport Report\n");
+        cityAirportReport.append("(What airports are in what cities)\n\n");
 
         for (City city : cities) {
             if (!city.getAirports().isEmpty()) {
-                cityReport.append("City: ").append(city.getName()).append("\n");
+                cityAirportReport.append("City: ").append(city.getName()).append("\n");
 
                 for (Airport airport : city.getAirports()) {
-                    cityReport.append("\t  ")
+                    cityAirportReport.append("\t  ")
                             .append(airport.getName())
                             .append(" (")
                             .append(airport.getCode())
@@ -64,7 +88,40 @@ public class CLIApplication {
             }
         }
 
-        return cityReport.toString();
+        return cityAirportReport.toString();
+    }
+
+    public String generatePassengerFlightReport() {
+        List<Passenger> passengers = getRestClient().getAllPassengers();
+        StringBuilder passengerFlightReport = new StringBuilder();
+
+        passengerFlightReport.append("Passenger Flight Report\n");
+        passengerFlightReport.append("(List of aircraft/flights passengers have travelled on)\n\n");
+
+        for (Passenger passenger : passengers) {
+            passengerFlightReport.append("Passenger: ")
+                    .append(passenger.getFirstName())
+                    .append(" ")
+                    .append(passenger.getLastName())
+                    .append("\n");
+
+            for (Flight flight : passenger.getFlights()) {
+                passengerFlightReport.append("\t\t   ");
+                passengerFlightReport.append(passenger.getFlights().indexOf(flight) + 1)
+                        .append(". ");
+                passengerFlightReport.append("Flight number ")
+                        .append(flight.getId())
+                        .append(" on ")
+                        .append(flight.getAircraft().getAirline().getName())
+                        .append(" (Aircraft ID: ")
+                        .append(flight.getAircraft().getId())
+                        .append(")\n");
+            }
+
+            passengerFlightReport.append("\n");
+        }
+
+        return passengerFlightReport.toString();
     }
 
     public static void main(String[] args) {
@@ -87,11 +144,17 @@ public class CLIApplication {
 
                 if (reportToGenerate != null && !reportToGenerate.isEmpty()) {
                     switch (reportToGenerate) {
+                        case "city-report":
+                            System.out.println(app.generateCityReport());
+                            break;
+                        case "passenger-report":
+                            System.out.println(app.generatePassengerReport());
+                            break;
                         case "city-airport-report":
                             System.out.println(app.generateCityAirportReport());
                             break;
-                        case "city-report":
-                            System.out.println(app.generateCityReport());
+                        case "passenger-flight-report":
+                            System.out.println(app.generatePassengerFlightReport());
                             break;
                         default:
                             System.out.println("Invalid report format");
@@ -101,6 +164,5 @@ public class CLIApplication {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
 }

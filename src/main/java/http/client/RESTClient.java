@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import domain.City;
+import domain.Passenger;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,15 +43,43 @@ public class RESTClient {
         return cities;
     }
 
+    public List<Passenger> getAllPassengers() {
+        List<Passenger> passengers = new ArrayList<>();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(serverURL)).build();
+
+        try {
+            HttpResponse<String> response = httpSender(request);
+            passengers = buildPassengerListFromResponse(response.body());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return passengers;
+    }
+
     public List<City> buildCityListFromResponse(String response) throws JsonProcessingException {
         List<City> cities = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
+
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
         cities = mapper.readValue(response, new TypeReference<List<City>>() {
         });
 
         return cities;
 
+    }
+
+    public List<Passenger> buildPassengerListFromResponse(String response) throws JsonProcessingException {
+        List<Passenger> passengers = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        passengers = mapper.readValue(response, new TypeReference<List<Passenger>>() {
+        });
+
+        return passengers;
     }
 
     public HttpClient getClient() {
