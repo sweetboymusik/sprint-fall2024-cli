@@ -6,6 +6,7 @@ import domain.Flight;
 import domain.Passenger;
 import http.client.RESTClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CLIApplication {
@@ -124,6 +125,41 @@ public class CLIApplication {
         return passengerFlightReport.toString();
     }
 
+    public String generatePassengerAirportReport() {
+        List<Passenger> passengers = getRestClient().getAllPassengers();
+        StringBuilder passengerAirportReport = new StringBuilder();
+
+        passengerAirportReport.append("Passenger Airport Report\n");
+        passengerAirportReport.append("(What airports have passengers used)\n\n");
+
+        for (Passenger passenger : passengers) {
+            passengerAirportReport.append("Passenger: ")
+                    .append(passenger.getFirstName())
+                    .append(" ")
+                    .append(passenger.getLastName())
+                    .append("\n");
+
+            List<String> flights = new ArrayList<>();
+
+            for (Flight flight : passenger.getFlights()) {
+                flights.add(flight.getOrigin().getName() + " (" + flight.getOrigin().getCode() + ") - Origin");
+                flights.add(flight.getDestination().getName() + " (" + flight.getDestination().getCode() + ") - Destination");
+            }
+
+            for (int i = 0; i < flights.size(); i++) {
+                passengerAirportReport.append("\t\t   ");
+                passengerAirportReport.append((i + 1))
+                        .append(". ")
+                        .append(flights.get(i))
+                        .append("\n");
+            }
+
+            passengerAirportReport.append("\n");
+        }
+
+        return passengerAirportReport.toString();
+    }
+
     public static void main(String[] args) {
         for (String arg : args) {
             System.out.println(arg);
@@ -147,6 +183,10 @@ public class CLIApplication {
                         case "city-report":
                             System.out.println(app.generateCityReport());
                             break;
+                        case "airport-report":
+                            break;
+                        case "flight-report":
+                            break;
                         case "passenger-report":
                             System.out.println(app.generatePassengerReport());
                             break;
@@ -155,6 +195,9 @@ public class CLIApplication {
                             break;
                         case "passenger-flight-report":
                             System.out.println(app.generatePassengerFlightReport());
+                            break;
+                        case "passenger-airport-report":
+                            System.out.println(app.generatePassengerAirportReport());
                             break;
                         default:
                             System.out.println("Invalid report format");
