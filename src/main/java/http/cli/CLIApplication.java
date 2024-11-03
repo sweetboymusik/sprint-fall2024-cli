@@ -46,6 +46,53 @@ public class CLIApplication {
         return cityReport.toString();
     }
 
+    public String generateAirportReport() {
+        List<Airport> airports = getRestClient().getAllAirports();
+        StringBuilder airportReport = new StringBuilder();
+
+        airportReport.append("Airport Report\n\n");
+
+        for (Airport airport : airports) {
+            airportReport.append("ID: ").append(airport.getId()).append("\n");
+            airportReport.append("Name: ").append(airport.getName()).append("\n");
+            airportReport.append("Code: ").append(airport.getCode()).append("\n");
+            airportReport.append("City: ").append(airport.getCity().getName()).append("\n");
+            airportReport.append("\n");
+        }
+
+        return airportReport.toString();
+    }
+
+    public String generateFlightReport() {
+        List<Flight> flights = getRestClient().getAllFlights();
+        StringBuilder flightReport = new StringBuilder();
+
+        flightReport.append("Flight Report\n\n");
+
+        for (Flight flight : flights) {
+            flightReport.append("ID: ").append(flight.getId()).append("\n");
+            flightReport.append("Departure Time: ").append(flight.getDeparture()).append("\n");
+            flightReport.append("Arrival Time: ").append(flight.getArrival()).append("\n");
+            flightReport.append("Origin Airport: ")
+                    .append(flight.getOrigin().getName())
+                    .append(" (")
+                    .append(flight.getOrigin().getCode())
+                    .append(")")
+                    .append("\n");
+            flightReport.append("Destination Airport: ")
+                    .append(flight.getDestination().getName())
+                    .append(" (")
+                    .append(flight.getDestination().getCode())
+                    .append(")")
+                    .append("\n");
+            flightReport.append("Number of Passengers: ").append(flight.getNumberOfPassengers()).append("\n");
+            flightReport.append("Aircraft ID: ").append(flight.getAircraft().getId()).append("\n");
+            flightReport.append("\n");
+        }
+
+        return flightReport.toString();
+    }
+
     public String generatePassengerReport() {
         List<Passenger> passengers = getRestClient().getAllPassengers();
         StringBuilder passengerReport = new StringBuilder();
@@ -184,8 +231,10 @@ public class CLIApplication {
                             System.out.println(app.generateCityReport());
                             break;
                         case "airport-report":
+                            System.out.println(app.generateAirportReport());
                             break;
                         case "flight-report":
+                            System.out.println(app.generateFlightReport());
                             break;
                         case "passenger-report":
                             System.out.println(app.generatePassengerReport());

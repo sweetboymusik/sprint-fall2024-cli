@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import domain.Airport;
 import domain.City;
+import domain.Flight;
 import domain.Passenger;
 
 import java.io.IOException;
@@ -43,6 +45,34 @@ public class RESTClient {
         return cities;
     }
 
+    public List<Airport> getAllAirports() {
+        List<Airport> airports = new ArrayList<>();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(serverURL)).build();
+
+        try {
+            HttpResponse<String> response = httpSender(request);
+            airports = buildAirportListFromResponse(response.body());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return airports;
+    }
+
+    public List<Flight> getAllFlights() {
+        List<Flight> flights = new ArrayList<>();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(serverURL)).build();
+
+        try {
+            HttpResponse<String> response = httpSender(request);
+            flights = buildFlightsListFromResponse(response.body());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return flights;
+    }
+
     public List<Passenger> getAllPassengers() {
         List<Passenger> passengers = new ArrayList<>();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(serverURL)).build();
@@ -67,7 +97,30 @@ public class RESTClient {
         });
 
         return cities;
+    }
 
+    public List<Airport> buildAirportListFromResponse(String response) throws JsonProcessingException {
+        List<Airport> airports = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        airports = mapper.readValue(response, new TypeReference<ArrayList<Airport>>() {
+        });
+
+        return airports;
+    }
+
+    public List<Flight> buildFlightsListFromResponse(String response) throws JsonProcessingException {
+        List<Flight> flights = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        flights = mapper.readValue(response, new TypeReference<ArrayList<Flight>>() {
+        });
+
+        return flights;
     }
 
     public List<Passenger> buildPassengerListFromResponse(String response) throws JsonProcessingException {
